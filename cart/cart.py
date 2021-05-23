@@ -16,11 +16,13 @@ class Cart:
         }
         self.session = request.session
         self.cart = request.session.get(settings.CART_USER_SESSION, _default_cart)
+        self.qty_update = False
 
     def add_product(self, product, qty=1):
         # product = Smartphone.objects.get(pk=5)
         key_product = serializers.serialize('json', [product, ],
-                                            fields=('product_name', 'price', 'product_image', 'manufacturer'))  # str
+                                            fields=('product_name', 'price', 'product_image', 'manufacturer',
+                                                    'subcategory'))  # str
         self.cart['products'][key_product] = self._add(key_product, product, qty)
         self.update()
         self.save()
@@ -28,7 +30,7 @@ class Cart:
     def _add(self, key_product, product, qty):
         price = product.price  # Decimal
         products = self.cart.get('products')
-        if all((products, key_product in products.keys())):
+        if all((products, key_product in products.keys(), not self.qty_update)):
             qty += self.cart['products'][key_product][0]
         return qty, str(Decimal(qty) * price)
 
@@ -36,7 +38,9 @@ class Cart:
         if qty <= 0:
             self.delete_product(product)
             return
+        self.qty_update = True
         self.add_product(product, qty)
+        self.qty_update = False
 
     def update(self):
         self.cart['total_qty'] = str(len(self.cart['products'].keys()))
@@ -45,7 +49,8 @@ class Cart:
 
     def delete_product(self, product):
         key_product = serializers.serialize('json', [product, ],
-                                            fields=('product_name', 'price', 'product_image', 'manufacturer'))  # str
+                                            fields=('product_name', 'price', 'product_image', 'manufacturer',
+                                                    'subcategory'))  # str
         self.cart['products'].pop(key_product)
         self.update()
         self.save()

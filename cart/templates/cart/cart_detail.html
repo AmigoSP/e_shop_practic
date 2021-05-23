@@ -17,21 +17,29 @@
         </tr>
         </thead>
         <tbody>
-        {% for product in cart.products.items %}
+        {% for product, values in cart.products.items %}
             <tr>
                 <th scope="row">1</th>
-                <td>{{ product.0.product_name }}</td>
+                <td>{{ product.product_name }}</td>
                 <td>:</td>
-                <td>{{ product.1.0 }}</td>
+                <form method="get" action="{% url 'update_cart' %}">
+                    {% csrf_token %}
+                    <td>
+                        <input type="hidden" name="subcategory" value="{{ product.subcategory.slug_url }}">
+                        <input type="hidden" name="product_id" value="{{ product.pk}}">
+                        <input type="number" min="0" name="product_qty" required id="id_product_qty" value="{{ values.0 }}">
+                        <button type="submit" class="btn btn-primary">Обновить</button>
+                    </td>
+
+                </form>
                 <td>x</td>
-                <td>{{ product.0.price }}</td>
+                <td>{{ product.price }}</td>
                 <td>=</td>
-                <td>{{ product.1.1 }}</td>
+                <td>{{ values.1 }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
 
     <p>Общая сумма: {{ cart.total_price }}</p>
 
