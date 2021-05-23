@@ -1,0 +1,29 @@
+{% extends 'layout/basic.html' %}
+{% load my_tags %}
+
+{% block main_content %}
+    <!-- Page Content-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <h1 class="my-4">E-SHOP</h1>
+                <div class="list-group">
+                    <a class="list-group-item" href="/">Назад</a>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <br>
+                {% for field, value in product_detail %}
+                    <div class="row">
+                        <p><b>{% verbose_name product_detail field %}:</b> {{ value }}</p>
+                    </div>
+
+                {% endfor %}
+                <div class="row">
+                    <a class="btn btn-primary" href="{% url 'add_to_cart' product_detail.subcategory.slug_url product_detail.pk %}" role="button">Добавить в корзину</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

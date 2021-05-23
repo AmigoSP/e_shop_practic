@@ -1,0 +1,37 @@
+{% extends 'layout/basic.html' %}
+
+{% block main_content %}
+    <!-- Page Content-->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <h1 class="my-4">E-SHOP</h1>
+                    <div class="list-group">
+                        <a class="list-group-item" href="/">Назад</a>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <br>
+                    <div class="row">
+                        {% for product in product_list %}
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100">
+                                <a href="#!"><img class="card-img-top" src="https://via.placeholder.com/700x400" alt="..." /></a>
+                                <div class="card-body">
+                                    <div class="row row-flex">
+                                        <h4 class="card-title"><a href="{% url 'product_detail' product.subcategory.slug_url product.slug_url %}">{{ product.product_name }}</a></h4>
+                                        <p class="card-text">Категория: {{ product.category }}/{{ product.subcategory }}</p>
+                                        <p class="card-text">Производитель: {{ product.manufacturer }}</p>
+                                        <h5>Цена: {{ product.price }}</h5>
+                                    </div>
+
+                                </div>
+                                <div class="card-footer"><small class="text-muted">★ ★ ★ ★ ☆</small></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
