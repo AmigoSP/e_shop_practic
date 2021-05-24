@@ -2,45 +2,55 @@
 
 {% block main_content %}
 
-
+<div class="col-8">
     <table class="table">
         <thead class="thead-light">
         <tr>
             <th scope="col">#</th>
             <th scope="col">Название продукта</th>
-            <th scope="col"></th>
             <th scope="col">Кол-во</th>
             <th scope="col"></th>
             <th scope="col">Цена за единицу</th>
             <th scope="col"></th>
             <th scope="col">Суммарно</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         {% for product, values in cart.products.items %}
             <tr>
-                <th scope="row">1</th>
-                <td>{{ product.product_name }}</td>
-                <td>:</td>
+                <th scope="row" class="col-1">{{ forloop.counter }}</th>
+                <td class="col-1">{{ product.product_name }}</td>
                 <form method="get" action="{% url 'update_cart' %}">
                     {% csrf_token %}
-                    <td>
+                    <td class="col-2">
                         <input type="hidden" name="subcategory" value="{{ product.subcategory.slug_url }}">
-                        <input type="hidden" name="product_id" value="{{ product.pk}}">
-                        <input type="number" min="0" name="product_qty" required id="id_product_qty" value="{{ values.0 }}">
+                        <input type="hidden" name="product_id" value="{{ product.pk }}">
+                        <input type="number" min="0" name="product_qty" required id="id_product_qty"
+                               value="{{ values.0 }}">
                         <button type="submit" class="btn btn-primary">Обновить</button>
                     </td>
 
                 </form>
-                <td>x</td>
-                <td>{{ product.price }}</td>
-                <td>=</td>
-                <td>{{ values.1 }}</td>
+                <td class="col-1">x</td>
+                <td class="col-1">{{ product.price }}</td>
+                <td class="col-1">=</td>
+                <td class="col-1">{{ values.1 }}</td>
+                <form method="get" action="{% url 'update_cart' %}">
+                    {% csrf_token %}
+                    <td class="col-1">
+                        <input type="hidden" name="subcategory" value="{{ product.subcategory.slug_url }}">
+                        <input type="hidden" name="product_id" value="{{ product.pk }}">
+                        <input type="hidden" name="product_qty" required id="id_product_qty"
+                               value="0">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </td>
+                </form>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
+</div>
     <p>Общая сумма: {{ cart.total_price }}</p>
 
 {% endblock %}
