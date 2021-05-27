@@ -2,7 +2,7 @@
 
 {% block main_content %}
 
-<div class="col-8">
+<div class="col-6">
     <table class="table">
         <thead class="thead-light">
         <tr>
@@ -19,11 +19,11 @@
         <tbody>
         {% for product, values in cart.products.items %}
             <tr>
-                <th scope="row" class="col-1">{{ forloop.counter }}</th>
-                <td class="col-1">{{ product.product_name }}</td>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td class="col">{{ product.product_name }}</td>
                 <form method="get" action="{% url 'update_cart' %}">
                     {% csrf_token %}
-                    <td class="col-2">
+                    <td class="col">
                         <input type="hidden" name="subcategory" value="{{ product.subcategory.slug_url }}">
                         <input type="hidden" name="product_id" value="{{ product.pk }}">
                         <input type="number" min="0" name="product_qty" required id="id_product_qty"
@@ -32,13 +32,13 @@
                     </td>
 
                 </form>
-                <td class="col-1">x</td>
-                <td class="col-1">{{ product.price }}</td>
-                <td class="col-1">=</td>
-                <td class="col-1">{{ values.1 }}</td>
+                <td class="col">x</td>
+                <td class="col">{{ product.price }}</td>
+                <td class="col">=</td>
+                <td class="col">{{ values.1 }}</td>
                 <form method="get" action="{% url 'update_cart' %}">
                     {% csrf_token %}
-                    <td class="col-1">
+                    <td class="col">
                         <input type="hidden" name="subcategory" value="{{ product.subcategory.slug_url }}">
                         <input type="hidden" name="product_id" value="{{ product.pk }}">
                         <input type="hidden" name="product_qty" required id="id_product_qty"
