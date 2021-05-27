@@ -1,7 +1,10 @@
+import json
+from decimal import Decimal
+
 from django.conf import settings
 from django.core import serializers
 
-from decimal import Decimal
+from .models import CartAuthCustomer
 
 
 class Cart:
@@ -11,12 +14,23 @@ class Cart:
 
         _default_cart = {
             'products': {},
-            'total_qty': 0,
-            'total_price': 0,
+            'total_qty': '0',
+            'total_price': '0',
         }
-        self.session = request.session
-        self.cart = request.session.get(settings.CART_USER_SESSION, _default_cart)
         self.qty_update = False
+        self.user_is_authenticated = False
+        if not request.user.is_authenticated:
+            self.session = request.session
+            self.cart = request.session.get(settings.CART_USER_SESSION, _default_cart)
+        else:
+            self.session = {settings.CART_USER_SESSION: _default_cart}
+            self.cart, self.cart_model = self.get_cart_auth_customer(user=request.user)
+            self.user_is_authenticated = True
+
+    @staticmethod
+    def get_cart_auth_customer(user):
+        cart_customer = CartAuthCustomer.objects.get(customer=user)
+        return json.loads(cart_customer.cart_customer), cart_customer
 
     def add_product(self, product, qty=1):
         # product = Smartphone.objects.get(pk=5)
@@ -63,12 +77,12 @@ class Cart:
         return total_price
 
     def save(self):
-        self.session[settings.CART_USER_SESSION] = self.cart
-        self.session.modified = True
-
-    def delete(self):
-        del self.session[settings.CART_USER_SESSION]
-        self.session.modified = True
+        if not self.user_is_authenticated:
+            self.session[settings.CART_USER_SESSION] = self.cart
+            self.session.modified = True
+        else:
+            self.cart_model.cart_customer = json.dumps(self.cart)
+            self.cart_model.save(update_fields=['cart_customer'])
 
     def __str__(self):
         return str(f"<Cart:(qty: {self.cart['total_qty']}, price: {self.cart['total_price']})>")
