@@ -46,6 +46,9 @@
                                 <span class="badge badge-warning">{{ cart.total_qty }}</span>
                             </a>
                         </li>
+                        {% if request.user.is_authenticated %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'logout_view' %}">Выйти</a></li>
+                        {% endif %}
                 </ul>
             </div>
         </div>

@@ -1,7 +1,7 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.conf import settings
@@ -35,3 +35,8 @@ class RegistrationCustomer(CreateView):
     def create_auth_cart(self, session_cart):
         customer_cart = session_cart.cart
         CartAuthCustomer.objects.create(customer=self.request.user, cart_customer=json.dumps(customer_cart))
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('main_page')
